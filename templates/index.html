@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>サンプル電機 | 書類照合デモ</title><link rel="stylesheet" href="/static/style.css"></head>
+<body data-workspace="{{ token }}">
+<header><span class="brand">公開デモ / DOCUMENT DESK</span><span class="tag">架空データ · ローカル処理</span><h1>書類の読み取りから、確認済みの一覧へ。</h1><p>PDFの根拠を見ながら修正し、台帳と照合してExcelにまとめます。</p></header>
+<main>
+<section class="toolbar"><button id="samples">架空サンプルを読み込む</button><label class="upload">PDFを選ぶ<input id="upload" type="file" accept="application/pdf"></label><form id="export-form" action="/api/export" method="post"><input type="hidden" name="workspace" value="{{ token }}"><button id="export" type="submit">確認済みをExcelへ</button></form><button id="clear" class="secondary">作業を終了・削除</button><small>1ファイル10MB・5ページまで / 1回12書類まで</small></section>
+<p id="message" role="status">サンプルまたはPDFを読み込んでください。書類は外部へ送信しません。</p>
+<div class="workspace"><aside><h2>書類一覧 <span id="count">0</span></h2><div id="list"></div><details><summary>照合用の架空台帳</summary><p>サンプル電機 / PO-1001 / 55,000円<br>サンプル電機 / PO-1002 / 88,000円</p></details></aside>
+<section id="detail" hidden>
+<div class="detail-head"><h2 id="filename"></h2><span id="confirmed"></span></div>
+<div class="review"><section class="source"><label>元ページ<select id="page"></select></label><img id="preview" alt="元PDFのページ画像"><details open><summary>このページの読み取り文字 <span id="method"></span></summary><pre id="text"></pre></details></section>
+<section class="editor"><h3>抽出候補を確認・修正</h3><p class="hint">文字抽出・ローカルOCRが候補を読み取り、コードが照合します。人が修正・確認して出力を確定します。生成AIは使っていません。未取得は空欄です。</p><form id="edit">
+{% for field in fields %}<label>{{ field }}<input name="{{ field }}" maxlength="200" autocomplete="off"><small data-evidence="{{ field }}"></small></label>{% endfor %}
+<label>確認理由（不一致・未照合のとき必須）<textarea name="reason" rows="2" maxlength="1000"></textarea></label><button type="submit">修正を保存・再照合</button></form>
+<div id="result" role="status"></div><p id="errors"></p><div class="actions"><button id="confirm">内容を確認済みにする</button><button id="exclude" class="secondary">対象から除外</button></div><p class="hint">修正すると確認済みが解除されます。重複候補は不要な書類を除外してから確認してください。</p></section></div>
+</section><section id="empty"><h2>まずは2つのサンプルで体験</h2><p>文字PDFの請求書と、画像PDFの納品書。<br>金額不一致は理由を記入して確認できます。</p></section></div>
+</main><footer>公開デモです。サンプル電機を含め、会社・人物・書類・台帳はすべて架空です。実運用・納品の実績ではありません。</footer><script src="/static/app.js"></script></body></html>
